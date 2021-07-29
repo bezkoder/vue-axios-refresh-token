@@ -8,16 +8,17 @@
 
 <script>
 import UserService from '../services/user.service';
+import EventBus from "../common/EventBus";
 
 export default {
-  name: 'Home',
+  name: 'Admin',
   data() {
     return {
       content: ''
     };
   },
   mounted() {
-    UserService.getPublicContent().then(
+    UserService.getAdminBoard().then(
       response => {
         this.content = response.data;
       },
@@ -26,6 +27,10 @@ export default {
           (error.response && error.response.data && error.response.data.message) ||
           error.message ||
           error.toString();
+
+        if (error.response && error.response.status === 403) {
+          EventBus.dispatch("logout");
+        }
       }
     );
   }
